@@ -20,9 +20,9 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     };
 
     return (
-      <div className="w-full space-y-1">
+      <div className="w-full space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-admin-foreground">
+          <label className="block text-design-sm font-design-medium text-gray-700">
             {label}
           </label>
         )}
@@ -35,8 +35,9 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
           <input
             type={inputType}
             className={cn(
-              "flex w-full rounded-md border px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-              error ? "border-admin-error" : "border-input",
+              "w-full px-design-3 py-design-3 rounded-design-md border border-gray-200 bg-white text-design-sm text-gray-800 transition-all duration-150",
+              "focus:outline-none focus:border-primary-500 focus:ring focus:ring-primary-100 focus:ring-opacity-50",
+              error ? "border-red-500 focus:ring-red-100" : "",
               icon ? "pl-10" : "",
               className
             )}
@@ -58,7 +59,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
           )}
         </div>
         {error && (
-          <p className="text-admin-error text-xs mt-1">{error}</p>
+          <p className="text-red-500 text-design-xs mt-1">{error}</p>
         )}
       </div>
     );

@@ -23,19 +23,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ...props 
   }, ref) => {
     
-    const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyles = "inline-flex items-center justify-center rounded-design-md font-design-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2";
     
     const variants = {
-      primary: "bg-admin-primary text-white hover:bg-admin-primary/90",
-      secondary: "bg-admin-secondary text-white hover:bg-admin-secondary/90",
-      outline: "border border-admin-primary text-admin-primary hover:bg-admin-accent",
-      ghost: "text-admin-primary hover:bg-admin-accent"
+      primary: "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
+      secondary: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 focus:ring-primary-500",
+      outline: "border border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500",
+      ghost: "text-primary-500 hover:bg-primary-50 focus:ring-primary-500"
     };
     
     const sizes = {
-      sm: "h-9 px-3 text-xs",
-      md: "h-10 px-4 text-sm",
-      lg: "h-11 px-6 text-base"
+      sm: "px-3 py-2 text-design-xs",
+      md: "px-4 py-3 text-design-sm",
+      lg: "px-6 py-3 text-design-base"
     };
 
     return (
@@ -44,6 +44,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           baseStyles,
           variants[variant],
           sizes[size],
+          isLoading ? "opacity-70 cursor-not-allowed" : "",
           className
         )}
         ref={ref}

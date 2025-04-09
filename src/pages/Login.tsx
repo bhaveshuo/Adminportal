@@ -103,16 +103,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-admin-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-design-lg shadow-design p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-admin-secondary">Admin Portal</h1>
+            <h1 className="text-design-2xl font-design-bold text-gray-800">Admin Portal</h1>
             <p className="text-gray-500 mt-2">Sign in to your account</p>
           </div>
           
           {loginError && (
-            <div className="mb-6 p-3 bg-red-50 text-admin-error rounded-md flex items-center">
+            <div className="mb-6 p-3 bg-red-50 text-red-600 rounded-design-md flex items-center">
               <AlertTriangle className="h-5 w-5 mr-2" />
               <span>{loginError}</span>
             </div>
@@ -145,6 +145,8 @@ const Login = () => {
               <div className="pt-2">
                 <Button
                   type="submit"
+                  variant="primary"
+                  size="md"
                   className="w-full"
                   isLoading={isLoading}
                 >
@@ -155,13 +157,13 @@ const Login = () => {
           </form>
           
           <div className="mt-6 text-center">
-            <a href="#" className="text-sm text-admin-primary hover:underline">
+            <a href="#" className="text-design-sm text-primary-500 hover:text-primary-600 hover:underline">
               Forgot your password?
             </a>
           </div>
         </div>
         
-        <div className="text-center mt-6 text-sm text-gray-500">
+        <div className="text-center mt-6 text-design-sm text-gray-500">
           <p>© 2025 Company Name. All rights reserved.</p>
         </div>
       </div>
