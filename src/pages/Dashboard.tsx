@@ -16,13 +16,17 @@ const Dashboard = () => {
       <div className="border-b border-gray-200 pb-4" />
       
       <div className="flex items-center justify-end gap-4">
-        <Button className="bg-black text-white hover:bg-gray-800">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Offer
+        <Button 
+          variant="default" 
+          className="bg-black text-white hover:bg-gray-800 font-medium"
+        >
+          <span>Create Offer</span>
         </Button>
-        <Button className="bg-black text-white hover:bg-gray-800">
-          <ShoppingBag className="h-4 w-4 mr-2" />
-          Add Mall Registration
+        <Button 
+          variant="default" 
+          className="bg-black text-white hover:bg-gray-800 font-medium"
+        >
+          <span>Add Mall Registration</span>
         </Button>
       </div>
       

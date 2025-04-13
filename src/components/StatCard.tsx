@@ -10,7 +10,7 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, description }) => {
   return (
-    <Card className="bg-gray-50">
+    <Card className="bg-gray-50 border-gray-200">
       <CardContent className="pt-6">
         <div className="space-y-2">
           <p className="text-sm text-gray-500">{title}</p>

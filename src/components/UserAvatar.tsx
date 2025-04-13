@@ -9,7 +9,7 @@ interface UserAvatarProps {
 const UserAvatar: React.FC<UserAvatarProps> = ({ initials }) => {
   return (
     <Avatar className="h-10 w-10 bg-gray-200">
-      <AvatarFallback className="text-gray-700">{initials}</AvatarFallback>
+      <AvatarFallback className="text-gray-700 font-medium">{initials}</AvatarFallback>
     </Avatar>
   );
 };
