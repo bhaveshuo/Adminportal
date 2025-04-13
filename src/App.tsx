@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./components/DashboardLayout";
 
 const queryClient = new QueryClient();
 
@@ -16,9 +18,32 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          
+          {/* Dashboard routes */}
+          <Route path="/dashboard" element={
+            <DashboardLayout>
+              <Dashboard />
+            </DashboardLayout>
+          } />
+          <Route path="/master" element={
+            <DashboardLayout>
+              <div className="p-8">Master Page (Under Construction)</div>
+            </DashboardLayout>
+          } />
+          <Route path="/partners" element={
+            <DashboardLayout>
+              <div className="p-8">Partners Page (Under Construction)</div>
+            </DashboardLayout>
+          } />
+          <Route path="/settings" element={
+            <DashboardLayout>
+              <div className="p-8">Settings Page (Under Construction)</div>
+            </DashboardLayout>
+          } />
+          
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
