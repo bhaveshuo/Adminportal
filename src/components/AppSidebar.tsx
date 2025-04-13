@@ -49,7 +49,7 @@ const AppSidebar = () => {
   return (
     <Sidebar>
       <div className="p-4 border-b border-gray-200">
-        <h1 className="text-xl font-semibold">Admin Portal</h1>
+        <h1 className="text-xl font-design-semibold text-gray-800">Admin Portal</h1>
       </div>
       <SidebarContent>
         <SidebarMenu>

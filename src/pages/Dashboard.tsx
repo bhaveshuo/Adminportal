@@ -8,7 +8,7 @@ const Dashboard = () => {
   return (
     <div className="flex-1 p-8 space-y-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-design-bold text-gray-800">Dashboard</h1>
         <UserAvatar initials="BM" />
       </div>
       
@@ -18,14 +18,14 @@ const Dashboard = () => {
         <Button 
           variant="primary" 
           size="md"
-          className="bg-black text-white hover:bg-gray-800"
+          className="bg-primary-500 text-white hover:bg-primary-600"
         >
           Create Offer
         </Button>
         <Button 
           variant="primary" 
           size="md"
-          className="bg-black text-white hover:bg-gray-800"
+          className="bg-primary-500 text-white hover:bg-primary-600"
         >
           Add Mall Registration
         </Button>
