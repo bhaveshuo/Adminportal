@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, ShoppingBag } from 'lucide-react';
+import Button from '@/components/Button';
 import StatCard from '@/components/StatCard';
 import UserAvatar from '@/components/UserAvatar';
 
@@ -17,16 +16,18 @@ const Dashboard = () => {
       
       <div className="flex items-center justify-end gap-4">
         <Button 
-          variant="default" 
-          className="bg-black text-white hover:bg-gray-800 font-medium"
+          variant="primary" 
+          size="md"
+          className="bg-black text-white hover:bg-gray-800"
         >
-          <span>Create Offer</span>
+          Create Offer
         </Button>
         <Button 
-          variant="default" 
-          className="bg-black text-white hover:bg-gray-800 font-medium"
+          variant="primary" 
+          size="md"
+          className="bg-black text-white hover:bg-gray-800"
         >
-          <span>Add Mall Registration</span>
+          Add Mall Registration
         </Button>
       </div>
       
