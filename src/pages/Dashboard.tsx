@@ -1,9 +1,9 @@
 
 import React from 'react';
-import Button from '@/components/Button';
-import StatCard from '@/components/StatCard';
 import { Plus, Building, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import StatCard from '@/components/StatCard';
 
 const Dashboard = () => {
   return (
@@ -17,30 +17,30 @@ const Dashboard = () => {
             <Input
               type="search"
               placeholder="Search..."
-              className="pl-8 w-[200px] bg-white"
+              className="pl-8 w-[200px] bg-white border-gray-200"
             />
           </div>
           <Button 
-            variant="primary" 
+            variant="default"
             size="sm"
-            className="bg-primary-600 text-white hover:bg-primary-700 transition-colors"
-            icon={<Plus className="h-4 w-4" />}
+            className="bg-primary text-white hover:bg-primary/90"
           >
+            <Plus className="h-4 w-4 mr-2" />
             Create Offer
           </Button>
           <Button 
-            variant="primary" 
+            variant="default"
             size="sm"
-            className="bg-primary-600 text-white hover:bg-primary-700 transition-colors"
-            icon={<Building className="h-4 w-4" />}
+            className="bg-primary text-white hover:bg-primary/90"
           >
+            <Building className="h-4 w-4 mr-2" />
             Add Mall
           </Button>
         </div>
       </div>
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           title="Total Users" 
           value="1,248" 
