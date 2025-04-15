@@ -1,27 +1,35 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { TrendingUp } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
   value: string | number;
   description: string;
+  trend?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, description }) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, description, trend }) => {
+  const isPositive = trend && trend > 0;
+  const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
+  const trendIcon = isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />;
+
   return (
-    <Card className="bg-white border-gray-200 rounded-design-lg shadow-design-sm hover:shadow-design-md transition-all duration-200">
+    <Card className="bg-white border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
       <CardContent className="p-6">
-        <div className="space-y-3">
-          <div className="flex items-start justify-between">
-            <p className="text-design-sm font-design-medium text-gray-500">{title}</p>
-            <div className="rounded-full p-2 bg-primary-50 text-primary-600">
-              <TrendingUp className="h-4 w-4" />
-            </div>
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <div className="flex items-baseline justify-between">
+            <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+            {trend && (
+              <div className={`flex items-center gap-1 text-sm ${trendColor}`}>
+                {trendIcon}
+                {Math.abs(trend).toFixed(2)}%
+              </div>
+            )}
           </div>
-          <h3 className="text-2xl md:text-3xl font-design-bold text-gray-800">{value}</h3>
-          <p className="text-design-sm text-gray-500">{description}</p>
+          <p className="text-sm text-gray-500">{description}</p>
         </div>
       </CardContent>
     </Card>

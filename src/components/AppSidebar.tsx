@@ -5,16 +5,20 @@ import {
   LayoutDashboard, 
   Users, 
   Store, 
-  Settings, 
+  Settings,
+  Menu,
+  CalendarDays,
+  FileText,
   LogOut 
 } from 'lucide-react';
 import { 
   Sidebar, 
-  SidebarContent, 
+  SidebarContent,
   SidebarMenu, 
   SidebarMenuItem, 
   SidebarMenuButton 
 } from '@/components/ui/sidebar';
+import UserAvatar from './UserAvatar';
 
 const AppSidebar = () => {
   const location = useLocation();
@@ -27,29 +31,49 @@ const AppSidebar = () => {
       active: location.pathname === '/dashboard'
     },
     { 
-      icon: Users, 
-      label: 'Master', 
+      icon: Store, 
+      label: 'Tables', 
       path: '/master',
       active: location.pathname === '/master'
     },
     { 
-      icon: Store, 
-      label: 'Partners', 
-      path: '/partners',
-      active: location.pathname === '/partners'
+      icon: CalendarDays, 
+      label: 'Reservations', 
+      path: '/reservations',
+      active: location.pathname === '/reservations'
+    },
+    { 
+      icon: Users, 
+      label: 'Waiters', 
+      path: '/waiters',
+      active: location.pathname === '/waiters'
+    },
+    { 
+      icon: Menu, 
+      label: 'Menu', 
+      path: '/menu',
+      active: location.pathname === '/menu'
+    },
+    { 
+      icon: FileText, 
+      label: 'Reports', 
+      path: '/reports',
+      active: location.pathname === '/reports'
     },
     { 
       icon: Settings, 
       label: 'Settings', 
       path: '/settings',
       active: location.pathname === '/settings'
-    },
+    }
   ];
 
   return (
-    <Sidebar>
-      <div className="p-4 border-b border-gray-200">
-        <h1 className="text-xl font-design-semibold text-gray-800">Admin Portal</h1>
+    <Sidebar variant="inset" className="bg-[#1A1A1A] text-gray-300">
+      <div className="p-4 border-b border-gray-800">
+        <h1 className="text-xl font-semibold text-white flex items-center gap-2">
+          <span className="text-primary">•</span> TABELA
+        </h1>
       </div>
       <SidebarContent>
         <SidebarMenu>
@@ -65,17 +89,14 @@ const AppSidebar = () => {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <div className="mt-auto p-4 border-t border-gray-200">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/login" className="w-full">
-                <LogOut className="h-5 w-5" />
-                <span>Log out</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <div className="mt-auto p-4 border-t border-gray-800">
+        <div className="flex items-center gap-3 text-sm">
+          <UserAvatar initials="AS" />
+          <div className="flex-1">
+            <p className="font-medium text-white">Ann Smith</p>
+            <p className="text-gray-400 text-xs">Administrator</p>
+          </div>
+        </div>
       </div>
     </Sidebar>
   );
