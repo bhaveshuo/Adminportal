@@ -3,49 +3,56 @@ import React from 'react';
 import Button from '@/components/Button';
 import StatCard from '@/components/StatCard';
 import UserAvatar from '@/components/UserAvatar';
+import { Plus, Building } from 'lucide-react';
 
 const Dashboard = () => {
   return (
-    <div className="flex-1 p-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-design-bold text-gray-800">Dashboard</h1>
+    <div className="flex-1 space-y-6 p-6 md:p-8">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl md:text-3xl font-design-bold text-gray-800">Welcome back, Admin</h1>
+          <p className="text-gray-500 text-design-sm">Here's what's happening with your mall today.</p>
+        </div>
         <UserAvatar initials="BM" />
       </div>
       
-      <div className="border-b border-gray-200 pb-4" />
-      
-      <div className="flex items-center justify-end gap-4">
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-end">
         <Button 
           variant="primary" 
           size="md"
-          className="bg-primary-500 text-white hover:bg-primary-600"
+          className="bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+          icon={<Plus className="h-4 w-4" />}
         >
           Create Offer
         </Button>
         <Button 
           variant="primary" 
           size="md"
-          className="bg-primary-500 text-white hover:bg-primary-600"
+          className="bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+          icon={<Building className="h-4 w-4" />}
         >
           Add Mall Registration
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <StatCard 
-          title="Total users" 
+          title="Total Users" 
           value="1,248" 
-          description="Active users in your system" 
+          description="12% increase from last month" 
         />
         <StatCard 
-          title="Total Pending Partner" 
+          title="Pending Partners" 
           value="5" 
-          description="Approve request pending" 
+          description="3 new requests this week" 
         />
         <StatCard 
-          title="Total Malls" 
-          value="5" 
-          description="Check mall details" 
+          title="Active Malls" 
+          value="8" 
+          description="2 malls added this month" 
         />
       </div>
     </div>

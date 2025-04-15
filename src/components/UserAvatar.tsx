@@ -8,8 +8,10 @@ interface UserAvatarProps {
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ initials }) => {
   return (
-    <Avatar className="h-10 w-10 bg-gray-100 border border-gray-200 shadow-design-sm">
-      <AvatarFallback className="text-primary-600 font-design-semibold">{initials}</AvatarFallback>
+    <Avatar className="h-10 w-10 bg-primary-50 border border-primary-100 shadow-design-sm ring-2 ring-white">
+      <AvatarFallback className="text-primary-600 font-design-semibold text-design-sm">
+        {initials}
+      </AvatarFallback>
     </Avatar>
   );
 };
