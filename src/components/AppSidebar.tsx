@@ -9,7 +9,6 @@ import {
   Menu,
   CalendarDays,
   FileText,
-  LogOut 
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -69,7 +68,7 @@ const AppSidebar = () => {
   ];
 
   return (
-    <Sidebar className="bg-[#1A1A1A] text-gray-300 border-r border-gray-800">
+    <Sidebar className="bg-[#111827] text-gray-300 border-r border-gray-800">
       <div className="p-4 border-b border-gray-800">
         <h1 className="text-xl font-semibold text-white flex items-center gap-2">
           <span className="text-primary">•</span> TABELA
@@ -82,7 +81,7 @@ const AppSidebar = () => {
               <SidebarMenuButton asChild isActive={item.active}>
                 <Link 
                   to={item.path}
-                  className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.label}</span>

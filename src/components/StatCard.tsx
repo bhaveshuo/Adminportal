@@ -12,20 +12,21 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, description, trend }) => {
   const isPositive = trend && trend > 0;
-  const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
+  const trendColor = isPositive ? 'text-emerald-600' : 'text-rose-600';
+  const trendBg = isPositive ? 'bg-emerald-50' : 'bg-rose-50';
   const trendIcon = isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />;
 
   return (
-    <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+    <Card className="bg-white rounded-xl border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
       <CardContent className="p-6">
         <div className="space-y-3">
           <p className="text-sm font-medium text-gray-500">{title}</p>
           <div className="flex items-baseline justify-between">
             <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
             {trend && (
-              <div className={`flex items-center gap-1 text-sm font-medium ${trendColor}`}>
+              <div className={`flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-full ${trendColor} ${trendBg}`}>
                 {trendIcon}
-                {Math.abs(trend).toFixed(2)}%
+                {Math.abs(trend).toFixed(1)}%
               </div>
             )}
           </div>
