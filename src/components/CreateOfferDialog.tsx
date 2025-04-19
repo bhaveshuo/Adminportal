@@ -22,25 +22,33 @@ const CreateOfferDialog: React.FC<CreateOfferDialogProps> = ({ open, onOpenChang
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Create new offer</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-gray-900">Create new offer</DialogTitle>
           <p className="text-sm text-gray-500">This will be visible on the customer app</p>
         </DialogHeader>
         
         <div className="space-y-6 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="offerName">Offer Name</label>
-            <Input id="offerName" placeholder="Enter offer name" />
+            <label className="text-sm font-medium text-gray-700" htmlFor="offerName">Offer Name</label>
+            <Input 
+              id="offerName" 
+              placeholder="Enter offer name"
+              className="border-gray-200 focus:border-primary-500 focus:ring focus:ring-primary-100"
+            />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="description">Offer Description</label>
-            <Textarea id="description" placeholder="Enter offer description" />
+            <label className="text-sm font-medium text-gray-700" htmlFor="description">Offer Description</label>
+            <Textarea 
+              id="description" 
+              placeholder="Enter offer description"
+              className="border-gray-200 focus:border-primary-500 focus:ring focus:ring-primary-100 min-h-[120px]"
+            />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Select Mall</label>
+            <label className="text-sm font-medium text-gray-700">Select Mall</label>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="border-gray-200 focus:border-primary-500 focus:ring focus:ring-primary-100">
                 <SelectValue placeholder="Select a mall" />
               </SelectTrigger>
               <SelectContent>
@@ -52,24 +60,30 @@ const CreateOfferDialog: React.FC<CreateOfferDialogProps> = ({ open, onOpenChang
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Valid From</label>
-              <Input type="date" />
+              <label className="text-sm font-medium text-gray-700">Valid From</label>
+              <Input 
+                type="date" 
+                className="border-gray-200 focus:border-primary-500 focus:ring focus:ring-primary-100"
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Valid To</label>
-              <Input type="date" />
+              <label className="text-sm font-medium text-gray-700">Valid To</label>
+              <Input 
+                type="date"
+                className="border-gray-200 focus:border-primary-500 focus:ring focus:ring-primary-100"
+              />
             </div>
           </div>
 
           <div className="space-y-4">
-            <label className="text-sm font-medium">Offer Images</label>
+            <label className="text-sm font-medium text-gray-700">Offer Images</label>
             <div className="grid grid-cols-4 gap-4">
-              <div className="border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px]">
+              <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px] hover:border-primary-500 transition-colors cursor-pointer bg-gray-50">
                 <Plus className="h-8 w-8 text-gray-400" />
                 <span className="text-xs text-gray-500 mt-2">Main Image</span>
               </div>
               {[1, 2, 3].map((i) => (
-                <div key={i} className="border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px]">
+                <div key={i} className="border-2 border-dashed border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px] hover:border-primary-500 transition-colors cursor-pointer bg-gray-50">
                   <Plus className="h-8 w-8 text-gray-400" />
                   <span className="text-xs text-gray-500 mt-2">Sub Image</span>
                 </div>
@@ -83,10 +97,17 @@ const CreateOfferDialog: React.FC<CreateOfferDialogProps> = ({ open, onOpenChang
         </div>
 
         <div className="flex justify-end gap-3 mt-6">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+            className="border-gray-200 hover:bg-gray-50"
+          >
             Cancel
           </Button>
-          <Button onClick={handleCreate}>
+          <Button 
+            onClick={handleCreate}
+            className="bg-primary text-white hover:bg-primary/90"
+          >
             Create Offer
           </Button>
         </div>
