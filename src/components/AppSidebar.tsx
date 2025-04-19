@@ -2,13 +2,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, 
-  Users, 
-  Store, 
+  LayoutDashboard,
   Settings,
-  Menu,
-  CalendarDays,
-  FileText,
+  Building,
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -30,34 +26,10 @@ const AppSidebar = () => {
       active: location.pathname === '/dashboard'
     },
     { 
-      icon: Store, 
-      label: 'Tables', 
+      icon: Building, 
+      label: 'Master', 
       path: '/master',
       active: location.pathname === '/master'
-    },
-    { 
-      icon: CalendarDays, 
-      label: 'Reservations', 
-      path: '/reservations',
-      active: location.pathname === '/reservations'
-    },
-    { 
-      icon: Users, 
-      label: 'Waiters', 
-      path: '/waiters',
-      active: location.pathname === '/waiters'
-    },
-    { 
-      icon: Menu, 
-      label: 'Menu', 
-      path: '/menu',
-      active: location.pathname === '/menu'
-    },
-    { 
-      icon: FileText, 
-      label: 'Reports', 
-      path: '/reports',
-      active: location.pathname === '/reports'
     },
     { 
       icon: Settings, 
@@ -68,10 +40,10 @@ const AppSidebar = () => {
   ];
 
   return (
-    <Sidebar className="bg-[#111827] text-gray-300 border-r border-gray-800">
-      <div className="p-4 border-b border-gray-800">
-        <h1 className="text-xl font-semibold text-white flex items-center gap-2">
-          <span className="text-primary">•</span> TABELA
+    <Sidebar className="bg-white border-r border-gray-100">
+      <div className="p-4 border-b border-gray-100">
+        <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          Admin Portal
         </h1>
       </div>
       <SidebarContent>
@@ -81,7 +53,7 @@ const AppSidebar = () => {
               <SidebarMenuButton asChild isActive={item.active}>
                 <Link 
                   to={item.path}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.label}</span>
@@ -91,12 +63,12 @@ const AppSidebar = () => {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <div className="mt-auto p-4 border-t border-gray-800">
+      <div className="mt-auto p-4 border-t border-gray-100">
         <div className="flex items-center gap-3 text-sm">
-          <UserAvatar initials="AS" />
+          <UserAvatar initials="BM" />
           <div className="flex-1">
-            <p className="font-medium text-white">Ann Smith</p>
-            <p className="text-gray-400 text-xs">Administrator</p>
+            <p className="font-medium text-gray-900">Brad Morrison</p>
+            <p className="text-gray-500 text-xs">Administrator</p>
           </div>
         </div>
       </div>
