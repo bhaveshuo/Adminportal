@@ -20,13 +20,13 @@ const CreateOfferDialog: React.FC<CreateOfferDialogProps> = ({ open, onOpenChang
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900">Create new offer</DialogTitle>
           <p className="text-sm text-gray-500">This will be visible on the customer app</p>
         </DialogHeader>
         
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 bg-white">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700" htmlFor="offerName">Offer Name</label>
             <Input 
