@@ -4,9 +4,11 @@ import { Plus, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
 import CreateOfferDialog from '@/components/CreateOfferDialog';
+import MallRegistrationDialog from '@/components/MallRegistrationDialog';
 
 const Dashboard = () => {
   const [createOfferOpen, setCreateOfferOpen] = useState(false);
+  const [mallRegistrationOpen, setMallRegistrationOpen] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -28,6 +30,7 @@ const Dashboard = () => {
             variant="outline"
             size="sm"
             className="border-gray-200 hover:bg-gray-50"
+            onClick={() => setMallRegistrationOpen(true)}
           >
             <Building className="h-4 w-4 mr-2" />
             Add Mall Registration
@@ -57,6 +60,11 @@ const Dashboard = () => {
       <CreateOfferDialog
         open={createOfferOpen}
         onOpenChange={setCreateOfferOpen}
+      />
+
+      <MallRegistrationDialog
+        open={mallRegistrationOpen}
+        onOpenChange={setMallRegistrationOpen}
       />
     </div>
   );
