@@ -14,9 +14,8 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-4">
           <Button 
-            variant="default"
             size="sm"
-            className="bg-black text-white hover:bg-black/90"
+            className="bg-primary text-white hover:bg-primary/90"
           >
             <Plus className="h-4 w-4 mr-2" />
             Create Offer

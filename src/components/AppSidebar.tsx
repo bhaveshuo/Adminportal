@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Settings,
   Building,
+  Users
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -24,6 +25,12 @@ const AppSidebar = () => {
       label: 'Dashboard', 
       path: '/dashboard',
       active: location.pathname === '/dashboard'
+    },
+    { 
+      icon: Users, 
+      label: 'Partner', 
+      path: '/partner',
+      active: location.pathname === '/partner'
     },
     { 
       icon: Building, 
@@ -67,7 +74,7 @@ const AppSidebar = () => {
         <div className="flex items-center gap-3 text-sm">
           <UserAvatar initials="BM" />
           <div className="flex-1">
-            <p className="font-medium text-gray-900">Brad Morrison</p>
+            <p className="font-medium text-gray-900">Bhavesh Mhatre</p>
             <p className="text-gray-500 text-xs">Administrator</p>
           </div>
         </div>
