@@ -1,10 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
+import CreateOfferDialog from '@/components/CreateOfferDialog';
 
 const Dashboard = () => {
+  const [createOfferOpen, setCreateOfferOpen] = useState(false);
+
   return (
     <div className="space-y-8">
       {/* Header Section */}
@@ -16,6 +19,7 @@ const Dashboard = () => {
           <Button 
             size="sm"
             className="bg-primary text-white hover:bg-primary/90"
+            onClick={() => setCreateOfferOpen(true)}
           >
             <Plus className="h-4 w-4 mr-2" />
             Create Offer
@@ -49,6 +53,11 @@ const Dashboard = () => {
           description="Check mall details"
         />
       </div>
+
+      <CreateOfferDialog
+        open={createOfferOpen}
+        onOpenChange={setCreateOfferOpen}
+      />
     </div>
   );
 };
