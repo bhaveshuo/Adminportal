@@ -1,18 +1,18 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, AlertTriangle } from 'lucide-react';
+import { Mail, AlertTriangle } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import TextField from '@/components/TextField';
 import Button from '@/components/Button';
+import OTPVerification from '@/components/OTPVerification';
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [showOTPInput, setShowOTPInput] = useState(false);
+  const [userId, setUserId] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -34,71 +34,95 @@ const Login = () => {
     }
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPassword(value);
-    
-    if (!value) {
-      setPasswordError('Password is required');
-    } else if (value.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-    } else {
-      setPasswordError('');
+  const handleSendOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailError('');
+    setLoginError('');
+
+    if (!email) {
+      setEmailError('Email is required');
+      return;
+    }
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    setIsLoading(true);
+    console.log("Sending OTP to:", email);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ emailId: email }), // ✅ corrected field
+      });
+
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("Response data:", data);
+
+      if (response.ok) {
+        setUserId(data.userId); // ✅ store userId for verification
+        toast({
+          title: "OTP Sent",
+          description: "Please check your email for the OTP",
+        });
+        setShowOTPInput(true);
+      } else {
+        setLoginError(data.message || 'Failed to send OTP');
+      }
+    } catch (error) {
+      setLoginError('An error occurred. Please try again.');
+      console.error('Send OTP error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Reset errors
-    setEmailError('');
-    setPasswordError('');
-    setLoginError('');
-    
-    // Validate fields
-    let isValid = true;
-    
-    if (!email) {
-      setEmailError('Email is required');
-      isValid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
-      isValid = false;
-    }
-    
-    if (!password) {
-      setPasswordError('Password is required');
-      isValid = false;
-    } else if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-      isValid = false;
-    }
-    
-    if (!isValid) return;
-    
-    setIsLoading(true);
-    
+  const handleVerifyOTP = async (otp: string) => {
+    console.log("Verifying OTP:", otp, "for email:", email, "userId:", userId);
+
     try {
-      // Here you would normally make an API call to authenticate
-      // For now, we'll simulate a successful login after a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Example check - in real app this would be from your API
-      if (email === 'admin@example.com' && password === 'password123') {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          emailId: email, // ✅ corrected field
+          otp,
+        }),
+      });
+
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("Verification response:", data);
+
+      if (response.ok) {
+        localStorage.setItem('authToken', data.token);
         toast({
           title: "Login successful",
           description: "Welcome to the Admin Portal",
         });
-        // Redirect to dashboard
         navigate('/dashboard');
       } else {
-        setLoginError('Invalid email or password');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.message || 'Invalid OTP',
+        });
       }
     } catch (error) {
-      setLoginError('An error occurred. Please try again.');
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: 'An error occurred. Please try again.',
+      });
+      console.error('Verify OTP error:', error);
     }
   };
 
@@ -118,49 +142,37 @@ const Login = () => {
             </div>
           )}
           
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-6">
-              <TextField
-                label="Company Email"
-                type="email"
-                placeholder="Enter your company email"
-                value={email}
-                onChange={handleEmailChange}
-                error={emailError}
-                icon={<Mail className="h-5 w-5" />}
-                autoComplete="email"
-              />
-              
-              <TextField
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={handlePasswordChange}
-                error={passwordError}
-                icon={<Lock className="h-5 w-5" />}
-                autoComplete="current-password"
-              />
-              
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  className="w-full"
-                  isLoading={isLoading}
-                >
-                  Sign In
-                </Button>
+          {!showOTPInput ? (
+            <form onSubmit={handleSendOTP}>
+              <div className="space-y-6">
+                <TextField
+                  label="Company Email"
+                  type="email"
+                  placeholder="Enter your company email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  error={emailError}
+                  icon={<Mail className="h-5 w-5" />}
+                  autoComplete="email"
+                />
+                
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    className="w-full"
+                    isLoading={isLoading}
+                    disabled={!validateEmail(email)}
+                  >
+                    Send OTP
+                  </Button>
+                </div>
               </div>
-            </div>
-          </form>
-          
-          <div className="mt-6 text-center">
-            <a href="#" className="text-design-sm text-primary-500 hover:text-primary-600 hover:underline">
-              Forgot your password?
-            </a>
-          </div>
+            </form>
+          ) : (
+            <OTPVerification onVerify={handleVerifyOTP} />
+          )}
         </div>
         
         <div className="text-center mt-6 text-design-sm text-gray-500">
