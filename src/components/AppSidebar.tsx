@@ -5,7 +5,12 @@ import {
   LayoutDashboard,
   Settings,
   Building,
-  Users
+  Users,
+  Icon,
+  icons,
+  Handshake,
+  User,
+  Database
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -26,18 +31,28 @@ const AppSidebar = () => {
       path: '/dashboard',
       active: location.pathname === '/dashboard'
     },
+
     { 
-      icon: Users, 
-      label: 'Partner', 
-      path: '/partner',
-      active: location.pathname === '/partner'
-    },
-    { 
-      icon: Building, 
+      icon: Database, 
       label: 'Master', 
       path: '/master',
       active: location.pathname === '/master'
     },
+
+    { 
+      icon: Users, 
+      label: 'Retailers', 
+      path: '/Retailers',
+      active: location.pathname === '/retailers'
+    },
+
+    { 
+      icon: Building, 
+      label: 'Malls', 
+      path: '/Malls',
+      active: location.pathname === '/Malls'
+    },
+
     { 
       icon: Settings, 
       label: 'Settings', 

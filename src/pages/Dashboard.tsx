@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,10 +14,11 @@ const Dashboard = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+          <p className="mt-1.5 text-sm text-gray-500">View and manage your dashboard analytics</p>
         </div>
-        <div className="flex items-center gap-4">
-          <Button 
+        <div className="flex items-center gap-3">
+        <Button 
             size="sm"
             className="bg-primary text-white hover:bg-primary/90"
             onClick={() => setCreateOfferOpen(true)}
@@ -28,11 +28,11 @@ const Dashboard = () => {
           </Button>
           <Button 
             variant="outline"
-            size="sm"
-            className="border-gray-200 hover:bg-gray-50"
+            size="default"
+            className="gap-2 bg-white hover:bg-gray-50 border-gray-200"
             onClick={() => setMallRegistrationOpen(true)}
           >
-            <Building className="h-4 w-4 mr-2" />
+            <Building className="h-4 w-4 text-gray-600" />
             Add Mall Registration
           </Button>
         </div>

@@ -8,6 +8,9 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./components/DashboardLayout";
+import RetailersPage from './pages/Retailers';
+import Master from "./pages/Master";
+
 
 const queryClient = new QueryClient();
 
@@ -18,7 +21,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="/login" element={<Login />} />
           
           {/* Dashboard routes */}
@@ -29,9 +32,18 @@ const App = () => (
           } />
           <Route path="/master" element={
             <DashboardLayout>
-              <div className="p-8">Master Page (Under Construction)</div>
+              <Master />
             </DashboardLayout>
           } />
+          <Route
+             path="/retailers"
+              element={
+                <DashboardLayout>
+                <RetailersPage />
+              </DashboardLayout>
+              }
+            />
+
           <Route path="/partners" element={
             <DashboardLayout>
               <div className="p-8">Partners Page (Under Construction)</div>
