@@ -6,7 +6,7 @@ import TextField from '@/components/TextField';
 import Button from '@/components/Button';
 import OTPVerification from '@/components/OTPVerification';
 
-const Login = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +15,8 @@ const Login = () => {
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,24 +54,17 @@ const Login = () => {
     console.log("Sending OTP to:", email);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/user/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ emailId: email }), // ✅ corrected field
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailId: email }),
       });
 
-      console.log("Response status:", response.status);
       const data = await response.json();
-      console.log("Response data:", data);
 
       if (response.ok) {
-        setUserId(data.userId); // ✅ store userId for verification
-        toast({
-          title: "OTP Sent",
-          description: "Please check your email for the OTP",
-        });
+        setUserId(data.userId);
+        toast({ title: "OTP Sent", description: "Check your email for the OTP" });
         setShowOTPInput(true);
       } else {
         setLoginError(data.message || 'Failed to send OTP');
@@ -83,46 +78,36 @@ const Login = () => {
   };
 
   const handleVerifyOTP = async (otp: string) => {
-    console.log("Verifying OTP:", otp, "for email:", email, "userId:", userId);
-
+    setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login/verify`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/user/login/verify`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          emailId: email, // ✅ corrected field
-          otp,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, emailId: email, otp }),
       });
+      
+      console.log("headers");
+      console.log(response.headers);
+      const token = response.headers.get('Authorization');
+      console.log(token);
 
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("Verification response:", data);
-
-      if (response.ok) {
-        localStorage.setItem('authToken', data.token);
-        toast({
-          title: "Login successful",
-          description: "Welcome to the Admin Portal",
-        });
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('authToken', token);
+        toast({ title: "Login successful", description: "Welcome to the Admin Portal" });
         navigate('/dashboard');
       } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: data.message || 'Invalid OTP',
-        });
+        throw new Error("Authorization token not received");
       }
-    } catch (error) {
+    } catch (err: any) {
+      console.error(err);
       toast({
         variant: "destructive",
         title: "Error",
-        description: 'An error occurred. Please try again.',
+        description: err.message || 'An error occurred. Please try again.',
       });
-      console.error('Verify OTP error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
