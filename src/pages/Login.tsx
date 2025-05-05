@@ -19,7 +19,7 @@ const Login: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [userId, setUserId] = useState('');
-  const [resendCooldown, setResendCooldown] = useState(0); // ⏰ cooldown state
+  const [resendCooldown, setResendCooldown] = useState(0); // 
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -30,7 +30,7 @@ const Login: React.FC = () => {
     return re.test(email);
   };
 
-  // 🔥 handle cooldown timer
+  // handle cooldown timer
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (resendCooldown > 0) {
@@ -107,12 +107,12 @@ const Login: React.FC = () => {
           setUserId(data.userId);
           toast({ title: "OTP Sent", description: "Check your email for the OTP" });
           setShowOTPInput(true);
-          setResendCooldown(60); // ⏰ start cooldown
+          setResendCooldown(60); //
         } else {
           setLoginError('User ID missing in response');
         }
       } else {
-        setLoginError(data.message || 'Failed to send OTP');
+        setLoginError(data.message || 'Please entered registred EmailID');
       }
     } catch (error) {
       setLoginError('An error occurred. Please try again.');
@@ -140,14 +140,36 @@ const Login: React.FC = () => {
       });
 
       const token = response.headers.get('authorization');
-      console.log("auth token from header:", token);
-
+      const data = await response.json(); // parse body for IDs
+      
       if (token) {
         localStorage.setItem('token', token);
         localStorage.setItem('authToken', token);
+        
+        localStorage.setItem('accountId', data.userId);
+        localStorage.setItem('contactPersonEmailAddress', data.emailId);
+        localStorage.setItem('primaryEmergencyNumber', data.phonenumber);
+        localStorage.setItem('securityHeadContact', data.phonenumber);
+        localStorage.setItem('fireSafetyOfficeContact', data.phonenumber);
+        localStorage.setItem('administrativeContact', data.emailId);
+        localStorage.setItem('supportEmail', data.emailId);
+        localStorage.setItem('ownedBy', data.userId);
+      
+        console.log(' Saved IDs to localStorage:', {
+          accountId: data.userId,
+          contactPersonEmailAddress: data.emailId,
+          primaryEmergencyNumber: data.phonenumber,
+          securityHeadContact: data.phonenumber,
+          fireSafetyOfficeContact: data.phonenumber,
+          administrativeContact: data.emailId,
+          supportEmail: data.emailId,
+          ownedBy: data.userId
+        });
+      
         toast({ title: "Login successful", description: "Welcome to the Admin Portal" });
         navigate('/dashboard');
-      } else {
+      }
+      else {
         throw new Error("Authorization token not received (check CORS expose headers)");
       }
     } catch (err: any) {
