@@ -10,6 +10,7 @@ import {
   icons,
   Handshake,
   User,
+  LogOut,
   Database
 } from 'lucide-react';
 import { 
@@ -20,6 +21,7 @@ import {
   SidebarMenuButton 
 } from '@/components/ui/sidebar';
 import UserAvatar from './UserAvatar';
+import { Button } from '@/components/ui/button'
 
 const AppSidebar = () => {
   const location = useLocation();
@@ -60,6 +62,13 @@ const AppSidebar = () => {
       active: location.pathname === '/settings'
     }
   ];
+  
+  const handleLogout = () => {
+    // Here you would typically handle logout functionality
+    console.log('Logout clicked');
+    // For demonstration, we'll just redirect to login page
+    window.location.href = '/login';
+  };
 
   return (
     <Sidebar className="bg-white border-r border-gray-100">
@@ -86,12 +95,23 @@ const AppSidebar = () => {
         </SidebarMenu>
       </SidebarContent>
       <div className="mt-auto p-4 border-t border-gray-100">
-        <div className="flex items-center gap-3 text-sm">
-          <UserAvatar initials="BM" />
-          <div className="flex-1">
-            <p className="font-medium text-gray-900">Bhavesh Mhatre</p>
-            <p className="text-gray-500 text-xs">Administrator</p>
+      <div className="flex flex-col">
+          <div className="flex items-center gap-3 text-sm mb-3">
+            <UserAvatar initials="BM" />
+            <div className="flex-1">
+              <p className="font-medium text-gray-900">Bhavesh Mhatre</p>
+              <p className="text-gray-500 text-xs">Administrator</p>
+            </div>
           </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50 mt-1"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
         </div>
       </div>
     </Sidebar>

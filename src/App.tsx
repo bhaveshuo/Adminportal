@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./components/DashboardLayout";
 import RetailersPage from './pages/Retailers';
 import Master from "./pages/Master";
+import MallsTable from "./components/MallsTable";
 
 
 const queryClient = new QueryClient();

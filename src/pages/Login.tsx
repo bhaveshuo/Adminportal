@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, AlertTriangle } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import TextField from '@/components/TextField';
 import Button from '@/components/Button';
 import OTPVerification from '@/components/OTPVerification';
+
+interface LoginResponse {
+  userId?: string;
+  message?: string;
+  [key: string]: any;
+}
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,17 +19,38 @@ const Login: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [userId, setUserId] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0); // ⏰ cooldown state
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
+  // 🔥 handle cooldown timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      interval = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendCooldown]);
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
+
     if (!value) {
       setEmailError('Email is required');
     } else if (!validateEmail(value)) {
@@ -47,28 +74,49 @@ const Login: React.FC = () => {
       return;
     }
 
+    if (resendCooldown > 0) {
+      toast({ title: "Please wait", description: `You can resend OTP in ${resendCooldown}s.` });
+      return;
+    }
+
     setIsLoading(true);
+    console.log("Sending OTP to:", email);
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailId: email }),
-        }
-      );
-      const data = await response.json();
+      const response = await fetch(`${API_BASE_URL}/api/auth/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*'
+        },
+        body: JSON.stringify({
+          key: email,
+          media: 'EMAIL'
+        }),
+      });
+
+      let data: LoginResponse = {};
+      try {
+        data = await response.json();
+      } catch (err) {
+        console.warn("No JSON returned from /login", err);
+      }
 
       if (response.ok) {
-        setUserId(data.userId);
-        toast({ title: "OTP Sent", description: "Check your email for the OTP" });
-        setShowOTPInput(true);
+        if (data.userId) {
+          setUserId(data.userId);
+          toast({ title: "OTP Sent", description: "Check your email for the OTP" });
+          setShowOTPInput(true);
+          setResendCooldown(60); // ⏰ start cooldown
+        } else {
+          setLoginError('User ID missing in response');
+        }
       } else {
         setLoginError(data.message || 'Failed to send OTP');
       }
-    } catch (err) {
+    } catch (error) {
       setLoginError('An error occurred. Please try again.');
-      console.error(err);
+      console.error('Send OTP error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -77,30 +125,38 @@ const Login: React.FC = () => {
   const handleVerifyOTP = async (otp: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/user/login/verify`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, emailId: email, otp }),
-        }
-      );
-      const body = await res.json().catch(() => ({}));
-      const token =
-        body.token ||
-        res.headers.get('Authorization')?.split(' ')[1] ||
-        res.headers.get('x-auth-token');
+      const response = await fetch(`${API_BASE_URL}/api/auth/user/login/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*'
+        },
+        body: JSON.stringify({
+          userId,
+          key: email,
+          otp,
+          media: 'EMAIL'
+        }),
+      });
 
-      localStorage.setItem('token', token);
-      toast({ title: "Login successful", description: "Welcome to the Admin Portal" });
-      navigate('/dashboard');
+      const token = response.headers.get('authorization');
+      console.log("auth token from header:", token);
+
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('authToken', token);
+        toast({ title: "Login successful", description: "Welcome to the Admin Portal" });
+        navigate('/dashboard');
+      } else {
+        throw new Error("Authorization token not received (check CORS expose headers)");
+      }
     } catch (err: any) {
+      console.error(err);
       toast({
         variant: "destructive",
         title: "Error",
         description: err.message || 'An error occurred. Please try again.',
       });
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -135,16 +191,19 @@ const Login: React.FC = () => {
                   icon={<Mail className="h-5 w-5" />}
                   autoComplete="email"
                 />
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  className="w-full"
-                  isLoading={isLoading}
-                  disabled={!validateEmail(email)}
-                >
-                  Send OTP
-                </Button>
+
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    className="w-full"
+                    isLoading={isLoading}
+                    disabled={!validateEmail(email) || resendCooldown > 0}
+                  >
+                    {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : 'Send OTP'}
+                  </Button>
+                </div>
               </div>
             </form>
           ) : (
