@@ -50,13 +50,13 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
       const administrativeContact = localStorage.getItem('administrativeContact');
       const supportEmail = localStorage.getItem('supportEmail');
       const ownedBy = localStorage.getItem('ownedBy');
-
+  
       if (!accountId || !contactPersonEmailAddress || !administrativeContact || !supportEmail || !ownedBy) {
         console.error('Missing required IDs from localStorage:', { accountId, contactPersonEmailAddress, administrativeContact, supportEmail, ownedBy });
         alert('Error: Missing required user information. Please log in again.');
         return;
       }
-
+  
       // Validate latitude and longitude
       const validLat = parseFloat(latitude);
       const validLng = parseFloat(longitude);
@@ -64,76 +64,80 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
         alert('Latitude and Longitude must be valid numbers!');
         return;
       }
-
+  
       // Validate pincode
       if (!/^\d{4,10}$/.test(pin)) {
         alert('Pincode must be numeric (4-10 digits)!');
         return;
       }
-
-      // Hardcode state and city
-      const state = "Karnataka";
-      const city = "Bangalore";
-
-      const formData = new FormData();
-      formData.append('accountId', accountId);
-      formData.append('mallName', mallName);
-      formData.append('state', state);
-      formData.append('pincode', pin);
-      formData.append('addressState', state);
-      formData.append('country', 'India');
-      formData.append('city', city);
-      formData.append('lat', validLat.toString());
-      formData.append('lng', validLng.toString());
-      formData.append('googlePlusCode', googlePlusCode);
-      formData.append('areaName', areaName);
-      formData.append('legalEntityName', areaName);
-      formData.append('contactPersonEmailAddress', contactPersonEmailAddress);
-      formData.append('mallCategory', '20da49ac-02a2-49f1-a367-5c47b5b7b28a');
-      formData.append('totalBuildUpArea', '0');
-      formData.append('floorCounts', '0');
-      formData.append('storeCounts', '0');
-      formData.append('operatingSince', '01-01-2020');
-      formData.append('administrativeContact', contactPersonEmailAddress);
-      formData.append('supportEmail', contactPersonEmailAddress);
-      formData.append('status', '0');
-      formData.append('ownedBy', accountId);
-      formData.append('addressLine1', '123 Main St');
-      formData.append('addressLine2', 'Suite 456');
-      formData.append('timingWeekdayOpening', '09:00');
-      formData.append('timingWeekdayClosing', '21:00');
-      formData.append('timingWeekendOpening', '10:00');
-      formData.append('timingWeekendClosing', '22:00');
-
-
+  
+      const formData = {}
+      
+      // Required fields from curl example
+      formData['accountId'] = accountId;
+      formData['mallName'] = mallName;
+      formData['legalEntityName'] = areaName; // Using areaName as legalEntityName
+      formData['contactPersonEmailAddress'] = contactPersonEmailAddress;
+      formData['mallCategory'] = '20da49ac02a2-49f1-a367-5c47b5b7b28a'
+      formData['totalBuildUpArea'] = '0'
+      formData['floorCounts'] = '0'
+      formData['storeCounts'] = '0'
+      formData['operatingSince'] = '0' // Match format in curl example
+      
+      // No need to add optional fields from curl
+      formData['administrativeContact'] = administrativeContact;
+      formData['supportEmail'] = supportEmail;
+      formData['state'] = 'Karnataka' // Keep original value instead of '0'
+      formData['status'] = '0'
+      formData['ownedBy'] = accountId;
+      
+      // Additional fields from your implementation
+      // Only include these if the API actually accepts them
+      formData['pincode'] = pin;
+      formData['addressState'] = 'Karnataka'
+      formData['country'] = 'India'
+      formData['city'] = 'Bangalore'
+      formData['lat'] = validLat.toString();
+      formData['lng'] = validLng.toString();
+      formData['googlePlusCode'] = googlePlusCode;
+      formData['areaName'] = areaName;
+      formData['addressLine1'] = '123Main St'
+      formData['addressLine2'] = 'Suite456'
+      formData['timingWeekdayOpening'] = '0900'
+      formData['timingWeekdayClosing'] = '2100'
+      formData['timingWeekendOpening'] = '1000'
+      formData['timingWeekendClosing'] = '2200'
+  
       if (mainImage) {
-        formData.append('mainImage', mainImage);
+        formData['mainImage'] = mainImage;
       }
-
-      // Debug log
+  
       console.log('=== FORM DATA SUBMISSION ===');
-      for (let pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
-
+      console.log(formData);
+  
       const mallResponse = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/v1/malls`,
         formData
       );
 
+      console.log('Mall response:', mallResponse.status, mallResponse.statusText);
+  
       const mallId = mallResponse.data.id;
       console.log('✅ Mall created successfully:', mallResponse.data);
-
-      for (const file of subImages) {
-        const mediaFormData = new FormData();
-        mediaFormData.append('file', file);
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallId}/media`, mediaFormData);
+  
+      // Handle sub-images if available
+      if (subImages && subImages.length > 0) {
+        for (const file of subImages) {
+          const mediaFormData = new FormData();
+          mediaFormData.append('file', file);
+          await axios.post(`${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallId}/media`, mediaFormData);
+        }
+        console.log('✅ Sub-images uploaded!');
       }
-
-      console.log('✅ Sub-images uploaded!');
+  
       onOpenChange(false);
     } catch (err) {
-      console.error('Error registering mall:', err);
+      console.error('Error registering mall:', err.response?.data || err.message || err);
       alert('Failed to register mall. Please check console for details.');
     }
   };
