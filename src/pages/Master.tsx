@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import BusinessTypeTable from "@/components/BusinessTypeTable";
 import BusinessTypeTabs from "@/components/BusinessTypeTabs";
 import MallsTable from '@/components/MallsTable';
-//import MallsList from '@/components/MallsList';
 import MallRegistrationDialog from "@/components/MallRegistrationDialog";
 
 const Master = () => {

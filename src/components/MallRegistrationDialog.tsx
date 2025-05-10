@@ -44,19 +44,19 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
 
   const handleRegistration = async () => {
     try {
+      // Fetch IDs from localStorage
       const accountId = localStorage.getItem('accountId');
       const contactPersonEmailAddress = localStorage.getItem('contactPersonEmailAddress');
       const administrativeContact = localStorage.getItem('administrativeContact');
       const supportEmail = localStorage.getItem('supportEmail');
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
-
-      if (!accountId || !contactPersonEmailAddress || !administrativeContact || !supportEmail || !token || !userId) {
-        console.error('Missing required information:', { accountId, contactPersonEmailAddress, administrativeContact, supportEmail, userId });
+      const ownedBy = localStorage.getItem('ownedBy');
+  
+      if (!accountId || !contactPersonEmailAddress || !administrativeContact || !supportEmail || !ownedBy) {
+        console.error('Missing required IDs from localStorage:', { accountId, contactPersonEmailAddress, administrativeContact, supportEmail, ownedBy });
         alert('Error: Missing required user information. Please log in again.');
         return;
       }
-
+  
       // Validate latitude and longitude
       const validLat = parseFloat(latitude);
       const validLng = parseFloat(longitude);
@@ -64,108 +64,80 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
         alert('Latitude and Longitude must be valid numbers!');
         return;
       }
-
+  
       // Validate pincode
       if (!/^\d{4,10}$/.test(pin)) {
         alert('Pincode must be numeric (4-10 digits)!');
         return;
       }
-
-      const formData = new FormData();
+  
+      const formData = {}
       
-      // Required fields
-      formData.append('accountId', accountId);
-      formData.append('mallName', mallName);
-      formData.append('legalEntityName', areaName);
-      formData.append('contactPersonEmailAddress', contactPersonEmailAddress);
-      formData.append('mallCategory', '20da49ac02a2-49f1-a367-5c47b5b7b28a');
-      formData.append('totalBuildUpArea', '0');
-      formData.append('floorCounts', '0');
-      formData.append('storeCounts', '0');
-      formData.append('operatingSince', '0');
-      formData.append('administrativeContact', administrativeContact);
-      formData.append('supportEmail', supportEmail);
-      formData.append('state', 'Karnataka');
-      formData.append('status', '2'); // Set status to 2 to make it visible
-      formData.append('ownedBy', accountId);
-      formData.append('createdBy', userId || ''); // Add createdBy field
-      formData.append('isAdminCreated', 'false'); // Add isAdminCreated field
+      // Required fields from curl example
+      formData['accountId'] = accountId;
+      formData['mallName'] = mallName;
+      formData['legalEntityName'] = areaName; // Using areaName as legalEntityName
+      formData['contactPersonEmailAddress'] = contactPersonEmailAddress;
+      formData['mallCategory'] = '20da49ac02a2-49f1-a367-5c47b5b7b28a'
+      formData['totalBuildUpArea'] = '0'
+      formData['floorCounts'] = '0'
+      formData['storeCounts'] = '0'
+      formData['operatingSince'] = '0' // Match format in curl example
       
-      // Additional fields
-      formData.append('pincode', pin);
-      formData.append('addressState', 'Karnataka');
-      formData.append('country', 'India');
-      formData.append('city', 'Bangalore');
-      formData.append('lat', validLat.toString());
-      formData.append('lng', validLng.toString());
-      formData.append('googlePlusCode', googlePlusCode);
-      formData.append('areaName', areaName);
-      formData.append('addressLine1', '123Main St');
-      formData.append('addressLine2', 'Suite456');
-      formData.append('timingWeekdayOpening', '0900');
-      formData.append('timingWeekdayClosing', '2100');
-      formData.append('timingWeekendOpening', '1000');
-      formData.append('timingWeekendClosing', '2200');
-
+      // No need to add optional fields from curl
+      formData['administrativeContact'] = administrativeContact;
+      formData['supportEmail'] = supportEmail;
+      formData['state'] = 'Karnataka' // Keep original value instead of '0'
+      formData['status'] = '0'
+      formData['ownedBy'] = accountId;
+      
+      // Additional fields from your implementation
+      // Only include these if the API actually accepts them
+      formData['pincode'] = pin;
+      formData['addressState'] = 'Karnataka'
+      formData['country'] = 'India'
+      formData['city'] = 'Bangalore'
+      formData['lat'] = validLat.toString();
+      formData['lng'] = validLng.toString();
+      formData['googlePlusCode'] = googlePlusCode;
+      formData['areaName'] = areaName;
+      formData['addressLine1'] = '123Main St'
+      formData['addressLine2'] = 'Suite456'
+      formData['timingWeekdayOpening'] = '0900'
+      formData['timingWeekdayClosing'] = '2100'
+      formData['timingWeekendOpening'] = '1000'
+      formData['timingWeekendClosing'] = '2200'
+  
       if (mainImage) {
-        formData.append('mainImage', mainImage);
+        formData['mainImage'] = mainImage;
       }
-
+  
       console.log('=== FORM DATA SUBMISSION ===');
-      console.log('AccountId:', accountId);
-      console.log('Mall Name:', mallName);
-      
+      console.log(formData);
+  
       const mallResponse = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/v1/malls/admin`,
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
+        formData
       );
 
-      console.log('Mall creation response:', {
-        status: mallResponse.data.status,
-        isAdminCreated: mallResponse.data.isAdminCreated,
-        createdBy: mallResponse.data.createdBy,
-        ownedBy: mallResponse.data.ownedBy
-      });
-
-      if (mallResponse.data.id) {
-        // Handle sub-images if available
-        if (subImages && subImages.length > 0) {
-          for (const file of subImages) {
-            const mediaFormData = new FormData();
-            mediaFormData.append('file', file);
-            await axios.post(
-              `${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallResponse.data.id}/media`,
-              mediaFormData,
-              {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'multipart/form-data'
-                }
-              }
-            );
-          }
-          console.log('Sub-images uploaded!');
+      console.log('Mall response:', mallResponse.status, mallResponse.statusText);
+  
+      const mallId = mallResponse.data.id;
+      console.log('✅ Mall created successfully:', mallResponse.data);
+  
+      // Handle sub-images if available
+      if (subImages && subImages.length > 0) {
+        for (const file of subImages) {
+          const mediaFormData = new FormData();
+          mediaFormData.append('file', file);
+          await axios.post(`${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallId}/media`, mediaFormData);
         }
-
-        onOpenChange(false);
-        window.location.reload();
-      } else {
-        throw new Error('Mall creation failed - no ID returned');
+        console.log('Sub-images uploaded!');
       }
-    } catch (err: any) {
+  
+      onOpenChange(false);
+    } catch (err) {
       console.error('Error registering mall:', err.response?.data || err.message || err);
-      if (err.response?.status === 401 || 
-          (err.response?.data?.error && err.response?.data?.error.includes('JWT expired'))) {
-        alert('Your session has expired. Please log in again.');
-        window.location.href = '/login';
-        return;
-      }
       alert('Failed to register mall. Please check console for details.');
     }
   };
