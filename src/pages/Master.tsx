@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import BusinessTypeTable from "@/components/BusinessTypeTable";
 import BusinessTypeTabs from "@/components/BusinessTypeTabs";
-import MallsTable from "@/components/MallsTable";
+import MallsTable from '@/components/MallsTable';
+//import MallsList from '@/components/MallsList';
 import MallRegistrationDialog from "@/components/MallRegistrationDialog";
 
 const Master = () => {
@@ -56,7 +56,7 @@ const Master = () => {
             </Button>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
             <MallsTable />
           </div>
         </div>

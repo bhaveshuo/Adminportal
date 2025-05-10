@@ -44,15 +44,15 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
 
   const handleRegistration = async () => {
     try {
-      // Fetch IDs from localStorage
       const accountId = localStorage.getItem('accountId');
       const contactPersonEmailAddress = localStorage.getItem('contactPersonEmailAddress');
       const administrativeContact = localStorage.getItem('administrativeContact');
       const supportEmail = localStorage.getItem('supportEmail');
-      const ownedBy = localStorage.getItem('ownedBy');
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
 
-      if (!accountId || !contactPersonEmailAddress || !administrativeContact || !supportEmail || !ownedBy) {
-        console.error('Missing required IDs from localStorage:', { accountId, contactPersonEmailAddress, administrativeContact, supportEmail, ownedBy });
+      if (!accountId || !contactPersonEmailAddress || !administrativeContact || !supportEmail || !token || !userId) {
+        console.error('Missing required information:', { accountId, contactPersonEmailAddress, administrativeContact, supportEmail, userId });
         alert('Error: Missing required user information. Please log in again.');
         return;
       }
@@ -71,69 +71,101 @@ const MallRegistrationDialog: React.FC<MallRegistrationDialogProps> = ({ open, o
         return;
       }
 
-      // Hardcode state and city
-      const state = "Karnataka";
-      const city = "Bangalore";
-
       const formData = new FormData();
+      
+      // Required fields
       formData.append('accountId', accountId);
       formData.append('mallName', mallName);
-      formData.append('state', state);
+      formData.append('legalEntityName', areaName);
+      formData.append('contactPersonEmailAddress', contactPersonEmailAddress);
+      formData.append('mallCategory', '20da49ac02a2-49f1-a367-5c47b5b7b28a');
+      formData.append('totalBuildUpArea', '0');
+      formData.append('floorCounts', '0');
+      formData.append('storeCounts', '0');
+      formData.append('operatingSince', '0');
+      formData.append('administrativeContact', administrativeContact);
+      formData.append('supportEmail', supportEmail);
+      formData.append('state', 'Karnataka');
+      formData.append('status', '2'); // Set status to 2 to make it visible
+      formData.append('ownedBy', accountId);
+      formData.append('createdBy', userId || ''); // Add createdBy field
+      formData.append('isAdminCreated', 'false'); // Add isAdminCreated field
+      
+      // Additional fields
       formData.append('pincode', pin);
-      formData.append('addressState', state);
+      formData.append('addressState', 'Karnataka');
       formData.append('country', 'India');
-      formData.append('city', city);
+      formData.append('city', 'Bangalore');
       formData.append('lat', validLat.toString());
       formData.append('lng', validLng.toString());
       formData.append('googlePlusCode', googlePlusCode);
       formData.append('areaName', areaName);
-      formData.append('legalEntityName', areaName);
-      formData.append('contactPersonEmailAddress', contactPersonEmailAddress);
-      formData.append('mallCategory', '20da49ac-02a2-49f1-a367-5c47b5b7b28a');
-      formData.append('totalBuildUpArea', '0');
-      formData.append('floorCounts', '0');
-      formData.append('storeCounts', '0');
-      formData.append('operatingSince', '01-01-2020');
-      formData.append('administrativeContact', contactPersonEmailAddress);
-      formData.append('supportEmail', contactPersonEmailAddress);
-      formData.append('status', '0');
-      formData.append('ownedBy', accountId);
-      formData.append('addressLine1', '123 Main St');
-      formData.append('addressLine2', 'Suite 456');
-      formData.append('timingWeekdayOpening', '09:00');
-      formData.append('timingWeekdayClosing', '21:00');
-      formData.append('timingWeekendOpening', '10:00');
-      formData.append('timingWeekendClosing', '22:00');
-
+      formData.append('addressLine1', '123Main St');
+      formData.append('addressLine2', 'Suite456');
+      formData.append('timingWeekdayOpening', '0900');
+      formData.append('timingWeekdayClosing', '2100');
+      formData.append('timingWeekendOpening', '1000');
+      formData.append('timingWeekendClosing', '2200');
 
       if (mainImage) {
         formData.append('mainImage', mainImage);
       }
 
-      // Debug log
       console.log('=== FORM DATA SUBMISSION ===');
-      for (let pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
-
+      console.log('AccountId:', accountId);
+      console.log('Mall Name:', mallName);
+      
       const mallResponse = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/v1/malls`,
-        formData
+        `${import.meta.env.VITE_API_BASE_URL}/v1/malls/admin`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
 
-      const mallId = mallResponse.data.id;
-      console.log('✅ Mall created successfully:', mallResponse.data);
+      console.log('Mall creation response:', {
+        status: mallResponse.data.status,
+        isAdminCreated: mallResponse.data.isAdminCreated,
+        createdBy: mallResponse.data.createdBy,
+        ownedBy: mallResponse.data.ownedBy
+      });
 
-      for (const file of subImages) {
-        const mediaFormData = new FormData();
-        mediaFormData.append('file', file);
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallId}/media`, mediaFormData);
+      if (mallResponse.data.id) {
+        // Handle sub-images if available
+        if (subImages && subImages.length > 0) {
+          for (const file of subImages) {
+            const mediaFormData = new FormData();
+            mediaFormData.append('file', file);
+            await axios.post(
+              `${import.meta.env.VITE_API_BASE_URL}/v1/malls/${mallResponse.data.id}/media`,
+              mediaFormData,
+              {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data'
+                }
+              }
+            );
+          }
+          console.log('Sub-images uploaded!');
+        }
+
+        onOpenChange(false);
+        window.location.reload();
+      } else {
+        throw new Error('Mall creation failed - no ID returned');
       }
-
-      console.log('✅ Sub-images uploaded!');
-      onOpenChange(false);
-    } catch (err) {
-      console.error('Error registering mall:', err);
+    } catch (err: any) {
+      console.error('Error registering mall:', err.response?.data || err.message || err);
+      if (err.response?.status === 401 || 
+          (err.response?.data?.error && err.response?.data?.error.includes('JWT expired'))) {
+        alert('Your session has expired. Please log in again.');
+        window.location.href = '/login';
+        return;
+      }
       alert('Failed to register mall. Please check console for details.');
     }
   };
